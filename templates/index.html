@@ -299,7 +299,7 @@
     cards.forEach(card => {
       const rr = card.querySelector('.result-row');
       rr.classList.remove('visible');
-      rr.querySelector('.result-time').textContent = '';
+      rr.querySelector('.result-time').innerHTML = '';
       rr.querySelector('.result-meta').textContent = '';
       rr.querySelector('.result-time').className = 'result-time';
       rr.querySelectorAll('.fastest-badge').forEach(b => b.remove());
@@ -333,18 +333,16 @@
           metaEl.textContent = '';
         } else {
           timeEl.className = 'result-time' + (r.fastest ? ' fastest' : '');
-          timeEl.textContent = r.time_str;
-          let trafficNote = '';
+          let delayHtml = '';
           if (r.base_seconds != null) {
-            const delaySecs = r.total_seconds - r.base_seconds;
-            const delayMins = Math.round(delaySecs / 60);
+            const delayMins = Math.round((r.total_seconds - r.base_seconds) / 60);
             if (delayMins > 0) {
-              trafficNote = `+${delayMins} min traffic  ·  `;
-            } else {
-              trafficNote = 'no delay  ·  ';
+              delayHtml = ` <span style="font-size:16px;font-weight:400;color:var(--danger)">(+${delayMins} min)</span>`;
             }
           }
-          metaEl.textContent = `${trafficNote}${r.distance_str}${r.summary ? '  ·  via ' + r.summary : ''}`;
+          timeEl.innerHTML = r.time_str + delayHtml;
+          const distVia = `${r.distance_str}${r.summary ? '  ·  via ' + r.summary : ''}`;
+          metaEl.textContent = distVia;
           if (r.fastest) {
             const b = document.createElement('span');
             b.className = 'fastest-badge';
